@@ -1,14 +1,15 @@
 package org.start.baseApi.controller;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.start.baseApi.model.Manager;
 import org.start.baseApi.respository.ManagerRepository;
+import org.start.baseApi.util.authentication.ProjectToken;
 
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("manager")
@@ -54,14 +55,24 @@ public class ManagerController {
     }
 
     @PostMapping(value = "login", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public Response authenticateUser(@RequestBody Manager manager) {
+    public String authenticateUser(@RequestBody Manager manager) {
+
+        ProjectToken projectToken = new ProjectToken();
+        JSONObject jsonReturn = new JSONObject();
 
         Manager lManager = managerRepository.findByLoginPassword( manager.getLogin(), manager.getPassword());
 
-        if (lManager == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+        if (!(lManager == null)) {
+            jsonReturn.put("status", Response.Status.ACCEPTED.toString());
+            jsonReturn.put("userId", lManager.getId().toString());
+            jsonReturn.put("token", projectToken.genereteToken(manager.getLogin()));
         }else{
-            return Response.ok(Response.Status.ACCEPTED).build();
+            jsonReturn.put("path", "/manager/login");
+            jsonReturn.put("message", "Invalid Token");
+            jsonReturn.put("error", Response.Status.UNAUTHORIZED);
+            jsonReturn.put("status", 401);
         }
+
+        return jsonReturn.toString();
     }
 }
