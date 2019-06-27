@@ -1,10 +1,12 @@
 package org.start.baseApi.controller;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.start.baseApi.model.Salesman;
 import org.start.baseApi.respository.SalesmanRepository;
+import org.start.baseApi.util.authentication.ProjectToken;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -59,14 +61,24 @@ public class SalesmanController {
     }
 
     @PostMapping(value = "login", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public Response authenticateUser(@RequestBody Salesman entity) {
+    public String authenticateUser(@RequestBody Salesman entity) {
 
+        ProjectToken projectToken = new ProjectToken();
+        JSONObject jsonReturn = new JSONObject();
+        
         Salesman lSalesman = salesmanRepository.findByLoginPassword( entity.getLogin());
 
         if (lSalesman == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            jsonReturn.put("path", "/salesman/login");
+            jsonReturn.put("message", "Invalid Token");
+            jsonReturn.put("error", Response.Status.UNAUTHORIZED);
+            jsonReturn.put("status", Response.Status.UNAUTHORIZED.getStatusCode());
         }else{
-            return Response.ok(Response.Status.ACCEPTED).build();
+            jsonReturn.put("status", Response.Status.ACCEPTED.toString());
+            jsonReturn.put("userId", lSalesman.getId().toString());
+            jsonReturn.put("token", projectToken.genereteToken(lSalesman.getLogin()));
         }
+        
+        return jsonReturn.toString();
     }
 }

@@ -13,7 +13,10 @@ import java.io.IOException;
 @WebFilter(urlPatterns = "/*")
 public class CustomFilter implements Filter {
 
-    public static final String AUTHORIZATION = "Authorization";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String ROUTE_LOGIN_MANAGER = "/manager/login";
+    private static final String ROUTE_LOGIN_SALESMAN = "/salesman/login";
+
     private static final Logger logger = LoggerFactory.getLogger(CustomFilter.class);
 
     @Override
@@ -31,7 +34,7 @@ public class CustomFilter implements Filter {
 
         ProjectToken projectToken = new ProjectToken();
 
-        if (servletPath.equals("/manager/login") || projectToken.validToken(lsHeader)){
+        if (servletPath.equals(ROUTE_LOGIN_MANAGER) || servletPath.equals(ROUTE_LOGIN_SALESMAN) || projectToken.validToken(lsHeader)){
             filterChain.doFilter(servletRequest, servletResponse);
         }else{
             ((HttpServletResponse)servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);

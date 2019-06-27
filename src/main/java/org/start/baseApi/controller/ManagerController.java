@@ -62,15 +62,15 @@ public class ManagerController {
 
         Manager lManager = managerRepository.findByLoginPassword( manager.getLogin(), manager.getPassword());
 
-        if (!(lManager == null)) {
-            jsonReturn.put("status", Response.Status.ACCEPTED.toString());
-            jsonReturn.put("userId", lManager.getId().toString());
-            jsonReturn.put("token", projectToken.genereteToken(manager.getLogin()));
-        }else{
+        if (lManager == null) {
             jsonReturn.put("path", "/manager/login");
             jsonReturn.put("message", "Invalid Token");
             jsonReturn.put("error", Response.Status.UNAUTHORIZED);
-            jsonReturn.put("status", 401);
+            jsonReturn.put("status", Response.Status.UNAUTHORIZED.getStatusCode());
+        }else{
+            jsonReturn.put("status", Response.Status.ACCEPTED.toString());
+            jsonReturn.put("userId", lManager.getId().toString());
+            jsonReturn.put("token", projectToken.genereteToken(manager.getLogin()));
         }
 
         return jsonReturn.toString();

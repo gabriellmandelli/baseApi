@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.start.baseApi.configuration.CustomFilter;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 
@@ -33,7 +32,9 @@ public class ProjectToken {
     }
 
     public Boolean validToken(String token){
+        
         Boolean isValid = true;
+
         try{
             Claims claims = Jwts.parser()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(CHAVE))
@@ -43,16 +44,20 @@ public class ProjectToken {
             logger.info("Subject: " + claims.getSubject());
             logger.info("Issuer: " + claims.getIssuer());
             logger.info("Expiration: " + claims.getExpiration());
-
             logger.info("#### valid token : " + token);
 
         }catch(MalformedJwtException e){
+            logger.info("MalformedJwtException");
             logger.info("#### invalid token : " + token);
+            logger.info("#### Message Error : " + e.getMessage());
             isValid = false;
         }catch (Exception e) {
+            logger.info("Exception");
             logger.info("#### invalid token : " + token);
+            logger.info("#### Message Error : " + e.getMessage());
             isValid = false;
         }
+
         return isValid;
     }
 }
