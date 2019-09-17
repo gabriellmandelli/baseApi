@@ -29,9 +29,9 @@ public class ManagerController {
     }
 
     @PostMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Manager save(@RequestBody Manager Manager) {
-        Manager.setId(UUID.randomUUID());
-        return managerRepository.save(Manager);
+    public Manager save(@RequestBody Manager manager) {
+        manager.setId(UUID.randomUUID());
+        return managerRepository.save(manager);
     }
 
     @PutMapping(value = "{idManager}", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -69,7 +69,7 @@ public class ManagerController {
             jsonReturn.put("status", Response.Status.UNAUTHORIZED.getStatusCode());
         }else{
             jsonReturn.put("status", Response.Status.ACCEPTED.toString());
-            jsonReturn.put("userId", lManager.getId().toString());
+            jsonReturn.put("managerId", lManager.getId().toString());
             jsonReturn.put("token", projectToken.genereteToken(manager.getLogin()));
         }
 
