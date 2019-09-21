@@ -43,7 +43,10 @@ public class ClientController {
                        @PathVariable("idClient") UUID idClient,
                        @RequestBody Client Client) {
 
-        Client.setId(idClient);
+        if (Client.getId().equals(null)){
+            Client.setId(idClient);
+        }
+
         return clientRepository.save(Client);
     }
 

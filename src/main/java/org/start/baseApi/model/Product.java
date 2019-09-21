@@ -40,7 +40,7 @@ public class Product implements Serializable {
     private Manager manager;
 
     public Product(){
-
+        
     }
 
     public Product(UUID id, String name, String description, Double value, Double valueForSell, Manager manager) {

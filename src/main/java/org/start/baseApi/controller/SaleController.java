@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.start.baseApi.model.Sale;
+import org.start.baseApi.model.Salesman;
 import org.start.baseApi.respository.SaleRepository;
 
 import java.util.List;
@@ -38,7 +39,12 @@ public class SaleController {
     public Sale save(@RequestParam("idSalesman") UUID idSalesman,
                      @RequestBody Sale Sale) {
 
+        Salesman salesman = new Salesman();
+        salesman.setId(idSalesman);
+
         Sale.setId(UUID.randomUUID());
+        Sale.setSalesman(salesman);
+
         return saleRepository.save(Sale);
     }
 
@@ -47,9 +53,13 @@ public class SaleController {
                      @PathVariable("idSale") UUID idSale,
                      @RequestBody Sale Sale) {
 
-        if(!(idSale.equals(Sale.getId()))){
+        Salesman salesman = new Salesman();
+        salesman.setId(idSalesman);
+
+        if(Sale.getId().equals(null)){
             Sale.setId(idSale);
         }
+
         return saleRepository.save(Sale);
     }
 

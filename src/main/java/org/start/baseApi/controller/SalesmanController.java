@@ -41,6 +41,24 @@ public class SalesmanController {
         return salesmanRepository.save(Salesman);
     }
 
+    @PutMapping(value = "{idSalesman}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public Salesman edit(@RequestParam("idManager") UUID idManager,
+                         @PathVariable("idSalesman") UUID idSalesman,
+                         @RequestBody Salesman salesman) {
+
+        Manager manager = new Manager();
+
+        manager.setId(idManager);
+
+        if (salesman.getId().equals(null)){
+            salesman.setId(idSalesman);
+        }
+
+        salesman.setManager(manager);
+
+        return salesmanRepository.save(salesman);
+    }
+
     @DeleteMapping(value = "{idSalesman}")
     public void delete(@RequestParam("idManager") UUID idManager,
                        @PathVariable("idSalesman") UUID idSalesman){
@@ -57,20 +75,6 @@ public class SalesmanController {
                                    @PathVariable("idSalesman") UUID idSalesman) {
         return salesmanRepository.findById(idSalesman)
                                 .filter(salesman -> salesman.getManager().getId().equals(idManager)) ;
-    }
-
-    @PutMapping(value = "{idSalesman}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Salesman edit(@RequestParam("idManager") UUID idManager,
-                         @PathVariable("idSalesman") UUID idSalesman,
-                         @RequestBody Salesman salesman) {
-
-        Manager manager = new Manager();
-        manager.setId(idManager);
-
-        salesman.setId(idSalesman);
-        salesman.setManager(manager);
-
-        return salesmanRepository.save(salesman);
     }
 
     @PostMapping(value = "login", produces = {MediaType.APPLICATION_JSON_VALUE} )

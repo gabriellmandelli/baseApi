@@ -3,6 +3,7 @@ package org.start.baseApi.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.start.baseApi.model.Manager;
 import org.start.baseApi.model.Product;
 import org.start.baseApi.respository.ProductRepository;
 
@@ -37,8 +38,11 @@ public class ProductController {
     @PostMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     public Product save(@RequestParam("idManager") UUID idManager,
                         @RequestBody Product Product) {
+        Manager manager = new Manager();
+        manager.setId(idManager);
 
         Product.setId(UUID.randomUUID());
+        Product.setManager(manager);
         return productRepository.save(Product);
     }
 
@@ -47,7 +51,15 @@ public class ProductController {
                         @PathVariable("idProduct") UUID idProduct,
                         @RequestBody Product Product) {
 
-        Product.setId(idProduct);
+        Manager manager = new Manager();
+        manager.setId(idManager);
+
+        if(Product.getId().equals(null)){
+            Product.setId(idProduct);
+        }
+
+        Product.setManager(manager);
+
         return productRepository.save(Product);
     }
 

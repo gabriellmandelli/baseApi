@@ -38,9 +38,10 @@ public class ManagerController {
     public Manager edit(@PathVariable("idManager") UUID idManager,
                         @RequestBody Manager manager) {
 
-        if (manager.getId() == null){
+        if (manager.getId().equals(null)){
             manager.setId(idManager);
         }
+
         return managerRepository.save(manager);
     }
 
